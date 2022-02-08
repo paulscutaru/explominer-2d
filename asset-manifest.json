@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/react-gh-pages/static/css/main.073c9b0a.css",
-    "main.js": "/react-gh-pages/static/js/main.1b6a19e8.js",
-    "static/js/787.a86f3764.chunk.js": "/react-gh-pages/static/js/787.a86f3764.chunk.js",
-    "static/media/logo.svg": "/react-gh-pages/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
-    "index.html": "/react-gh-pages/index.html",
-    "main.073c9b0a.css.map": "/react-gh-pages/static/css/main.073c9b0a.css.map",
-    "main.1b6a19e8.js.map": "/react-gh-pages/static/js/main.1b6a19e8.js.map",
-    "787.a86f3764.chunk.js.map": "/react-gh-pages/static/js/787.a86f3764.chunk.js.map"
+    "main.css": "/paulscutar/test-app/static/css/main.073c9b0a.css",
+    "main.js": "/paulscutar/test-app/static/js/main.221524e2.js",
+    "static/js/787.a86f3764.chunk.js": "/paulscutar/test-app/static/js/787.a86f3764.chunk.js",
+    "static/media/logo.svg": "/paulscutar/test-app/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/paulscutar/test-app/index.html",
+    "main.073c9b0a.css.map": "/paulscutar/test-app/static/css/main.073c9b0a.css.map",
+    "main.221524e2.js.map": "/paulscutar/test-app/static/js/main.221524e2.js.map",
+    "787.a86f3764.chunk.js.map": "/paulscutar/test-app/static/js/787.a86f3764.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.1b6a19e8.js"
+    "static/js/main.221524e2.js"
   ]
 }
