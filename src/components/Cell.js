@@ -2,9 +2,6 @@ import classNames from "classnames";
 import { Container } from 'react-bootstrap'
 
 function Cell(props) {
-  /*className={classNames("cell", {
-      "cell-current": props.info.x === props.currentCell.x && props.info.y === props.currentCell.y
-    }, { "cell-wall": props.info.type === "wall" }) */
   let src;
   if (props.info.x === props.currentCell.x && props.info.y === props.currentCell.y) {
     if (props.currentCell.type === "bomb")

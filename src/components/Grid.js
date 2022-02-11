@@ -1,8 +1,8 @@
-import { useState, useReducer } from "react";
+import { useState, useReducer, useEffect } from "react";
 import { Container, Row, Col } from 'react-bootstrap'
 import Cell from './Cell'
 
-const HEIGHT = 17, WIDTH = 24
+const HEIGHT = 60, WIDTH = 10
 const EXPLOSION_SIZE = 2
 
 function generateRandomType(i, j) {
@@ -10,8 +10,10 @@ function generateRandomType(i, j) {
     random = Math.random()
     if (random < 0.02)
         type = "bonus"
-    else if ((random > 0.1 && random < 0.8) || (i < 3 && j < 3))
+    else if ((random > 0.02 && random < 0.7) || (i < 3 && j < 3))
         type = "empty"
+    else if (random > 0.7 && random < 0.715)
+        type = "trap"
     else
         type = "wall"
     return type
@@ -29,6 +31,8 @@ function getImage(type) {
             return "bomb.png"
         case "explosion":
             return "explosion.png"
+        case "trap":
+            return "trap.png"
     }
 }
 
@@ -48,10 +52,12 @@ function GenerateGrid() {
     return grid;
 }
 
+
 function Grid() {
     const [grid, setGrid] = useState(GenerateGrid())
     const [currentCell, setCurrentCell] = useState(grid[0][0])
     const [buttonBombEnabled, setButtonBombEnabled] = useState(true)
+    const [gameOver, setGameOver] = useState(false)
     const forceUpdate = useReducer(() => ({}))[1]
 
     function canMove(x, y) {
@@ -62,11 +68,12 @@ function Grid() {
 
     function explodeBomb() {
         let x = currentCell.x, y = currentCell.y, explosionImage = getImage("explosion"), emptyImage = getImage("empty")
+
         grid[x][y].type = "explosion"
         grid[x][y].img = explosionImage
 
         for (let i = 1; i <= EXPLOSION_SIZE; i++) {
-            if ((x + i) <= HEIGHT) {
+            if ((x + i) < HEIGHT) {
                 grid[x + i][y].type = "explosion"
                 grid[x + i][y].img = explosionImage
             }
@@ -78,7 +85,7 @@ function Grid() {
                 grid[x][y - i].type = "explosion"
                 grid[x][y - i].img = explosionImage
             }
-            if ((y + i) <= WIDTH) {
+            if ((y + i) < WIDTH) {
                 grid[x][y + i].type = "explosion"
                 grid[x][y + i].img = explosionImage
             }
@@ -87,7 +94,7 @@ function Grid() {
             grid[x][y].type = "empty"
             grid[x][y].img = emptyImage
             for (let i = 1; i <= EXPLOSION_SIZE; i++) {
-                if ((x + i) <= HEIGHT) {
+                if ((x + i) < HEIGHT) {
                     grid[x + i][y].type = "empty"
                     grid[x + i][y].img = emptyImage
                 }
@@ -99,7 +106,7 @@ function Grid() {
                     grid[x][y - i].type = "empty"
                     grid[x][y - i].img = emptyImage
                 }
-                if ((y + i) <= WIDTH) {
+                if ((y + i) < WIDTH) {
                     grid[x][y + i].type = "empty"
                     grid[x][y + i].img = emptyImage
                 }
@@ -108,11 +115,10 @@ function Grid() {
         }, 200);
     }
 
+
     function putBomb() {
         let x = currentCell.x, y = currentCell.y
         if (buttonBombEnabled) {
-            console.log("Bomb put at", grid[x][y])
-
             setButtonBombEnabled(false)
 
             grid[x][y].type = "bomb"
@@ -121,7 +127,7 @@ function Grid() {
             setTimeout(() => {
                 explodeBomb()
                 setButtonBombEnabled(true)
-            }, 1400);
+            }, 1100);
         }
     }
 
@@ -146,17 +152,30 @@ function Grid() {
                 break;
         }
 
-        console.log("last", currentCell)
-
         if (canMove(newX, newY)) {
-            console.log("current", grid[newX][newY])
+            if (grid[newX][newY].type === "trap") {
+                setGameOver(true)
+            }
             setCurrentCell(grid[newX][newY])
         }
     };
 
+    function restartGame() {
+        setGrid(GenerateGrid())
+        setCurrentCell(grid[0][0])
+        setGameOver(false)
+        console.log("Game restarted")
+    }
+
     return (
         <Container>
             <Container className="grid">
+                {gameOver &&
+                    <Container className="game-over-modal">
+
+                        <button className="button" onMouseDown={() => restartGame()}>Restart</button>
+                    </Container>
+                }
                 {grid.map((row, index) => (
                     <Row className="row-grid" key={index}>
                         {row.map((info, i) =>
@@ -167,20 +186,25 @@ function Grid() {
             </Container>
             <Container className="controls">
                 <Row>
-                    <button className="button" onClick={() => handleMove("up")}>↑</button>
+                    <Col>
+                        <button className="button" onMouseDown={() => handleMove("up")}>↑</button>
+                    </Col>
                 </Row>
                 <Row>
-                    <button className="button" onClick={() => handleMove("left")}>←</button>
-                    <button className="button" onClick={() => handleMove("down")}>↓</button>
-                    <button className="button" onClick={() => handleMove("right")}>→</button>
-                </Row>
-                <Row>
-                    {buttonBombEnabled &&
-                        <button className="button btn-bomb" onClick={() => putBomb()}>
-                            <img src={process.env.PUBLIC_URL + "/images/bomb_empty.png"} />
-                        </button>}
+                    <Col>
+                        <button className="button" onMouseDown={() => handleMove("left")}>←</button>
+                        <button className="button" onMouseDown={() => handleMove("down")}>↓</button>
+                        <button className="button" onMouseDown={() => handleMove("right")}>→</button>
+                    </Col>
+                    <Col>
+                        <button style={{ visibility: buttonBombEnabled ? 'visible' : 'hidden' }} className="button btn-bomb"
+                            onMouseDown={() => putBomb()}>
+                            💣
+                        </button>
+                    </Col>
                 </Row>
             </Container>
+
         </Container>
     );
 }
