@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import { Container, Row, Col } from 'react-bootstrap'
 import Cell from './Cell'
 
 const HEIGHT = 17, WIDTH = 24
+const EXPLOSION_SIZE = 2
 
 function generateRandomType(i, j) {
-    let random, type;
+    let random, type
     random = Math.random()
     if (random < 0.02)
         type = "bonus"
@@ -16,24 +17,28 @@ function generateRandomType(i, j) {
     return type
 }
 
-function getImage(type){
-    switch(type){
+function getImage(type) {
+    switch (type) {
         case "empty":
             return "cobblestone.png"
         case "wall":
             return "wall.png"
         case "bonus":
             return "bonus.png"
+        case "bomb":
+            return "bomb.png"
+        case "explosion":
+            return "explosion.png"
     }
 }
 
 function GenerateGrid() {
-    let grid = [];
-    let row;
+    let grid = []
+    let row
     for (let i = 0; i < HEIGHT; i++) {
         row = []
         for (let j = 0; j < WIDTH; j++) {
-            let type = generateRandomType(i,j)
+            let type = generateRandomType(i, j)
             let img = getImage(type)
             let info = { "img": img, "type": type, "x": i, "y": j }
             row.push(info)
@@ -44,9 +49,10 @@ function GenerateGrid() {
 }
 
 function Grid() {
-    const [grid, setGrid] = useState(GenerateGrid());
-    const [currentCell, setCurrentCell] = useState({ "x": 0, "y": 0 });
-
+    const [grid, setGrid] = useState(GenerateGrid())
+    const [currentCell, setCurrentCell] = useState(grid[0][0])
+    const [buttonBombEnabled, setButtonBombEnabled] = useState(true)
+    const forceUpdate = useReducer(() => ({}))[1]
 
     function canMove(x, y) {
         if (x < 0 || y < 0 || x >= HEIGHT || y >= WIDTH || grid[x][y].type === "wall")
@@ -54,32 +60,97 @@ function Grid() {
         return true
     }
 
+    function explodeBomb() {
+        let x = currentCell.x, y = currentCell.y, explosionImage = getImage("explosion"), emptyImage = getImage("empty")
+        grid[x][y].type = "explosion"
+        grid[x][y].img = explosionImage
+
+        for (let i = 1; i <= EXPLOSION_SIZE; i++) {
+            if ((x + i) <= HEIGHT) {
+                grid[x + i][y].type = "explosion"
+                grid[x + i][y].img = explosionImage
+            }
+            if ((x - i) >= 0) {
+                grid[x - i][y].type = "explosion"
+                grid[x - i][y].img = explosionImage
+            }
+            if ((y - i) >= 0) {
+                grid[x][y - i].type = "explosion"
+                grid[x][y - i].img = explosionImage
+            }
+            if ((y + i) <= WIDTH) {
+                grid[x][y + i].type = "explosion"
+                grid[x][y + i].img = explosionImage
+            }
+        }
+        setTimeout(() => {
+            grid[x][y].type = "empty"
+            grid[x][y].img = emptyImage
+            for (let i = 1; i <= EXPLOSION_SIZE; i++) {
+                if ((x + i) <= HEIGHT) {
+                    grid[x + i][y].type = "empty"
+                    grid[x + i][y].img = emptyImage
+                }
+                if ((x - i) >= 0) {
+                    grid[x - i][y].type = "empty"
+                    grid[x - i][y].img = emptyImage
+                }
+                if ((y - i) >= 0) {
+                    grid[x][y - i].type = "empty"
+                    grid[x][y - i].img = emptyImage
+                }
+                if ((y + i) <= WIDTH) {
+                    grid[x][y + i].type = "empty"
+                    grid[x][y + i].img = emptyImage
+                }
+            }
+            forceUpdate()
+        }, 200);
+    }
+
+    function putBomb() {
+        let x = currentCell.x, y = currentCell.y
+        if (buttonBombEnabled) {
+            console.log("Bomb put at", grid[x][y])
+
+            setButtonBombEnabled(false)
+
+            grid[x][y].type = "bomb"
+            grid[x][y].img = getImage("bomb")
+
+            setTimeout(() => {
+                explodeBomb()
+                setButtonBombEnabled(true)
+            }, 1400);
+        }
+    }
+
     function handleMove(direction) {
-        let x = 0, y = 0;
+        let newX = 0, newY = 0
         switch (direction) {
             case "left":
-                x = currentCell.x
-                y = currentCell.y - 1
+                newX = currentCell.x
+                newY = currentCell.y - 1
                 break;
             case "right":
-                x = currentCell.x
-                y = currentCell.y + 1
+                newX = currentCell.x
+                newY = currentCell.y + 1
                 break;
             case "up":
-                x = currentCell.x - 1
-                y = currentCell.y
+                newX = currentCell.x - 1
+                newY = currentCell.y
                 break;
             case "down":
-                x = currentCell.x + 1
-                y = currentCell.y
+                newX = currentCell.x + 1
+                newY = currentCell.y
                 break;
         }
 
-        console.log("current", currentCell)
-        console.log("next", grid[x][y])
+        console.log("last", currentCell)
 
-        if (canMove(x, y)) {
-            setCurrentCell({ "x": x, "y": y })
+        if (canMove(newX, newY)) {
+            console.log("current", grid[newX][newY])
+            setCurrentCell(grid[newX][newY])
         }
     };
 
@@ -102,6 +173,12 @@ function Grid() {
                     <button className="button" onClick={() => handleMove("left")}>←</button>
                     <button className="button" onClick={() => handleMove("down")}>↓</button>
                     <button className="button" onClick={() => handleMove("right")}>→</button>
+                </Row>
+                <Row>
+                    {buttonBombEnabled &&
+                        <button className="button btn-bomb" onClick={() => putBomb()}>
+                            <img src={process.env.PUBLIC_URL + "/images/bomb_empty.png"} />
+                        </button>}
                 </Row>
             </Container>
         </Container>

@@ -6,8 +6,12 @@ function Cell(props) {
       "cell-current": props.info.x === props.currentCell.x && props.info.y === props.currentCell.y
     }, { "cell-wall": props.info.type === "wall" }) */
   let src;
-  if (props.info.x === props.currentCell.x && props.info.y === props.currentCell.y)
-    src = process.env.PUBLIC_URL + "/images/player.png"
+  if (props.info.x === props.currentCell.x && props.info.y === props.currentCell.y) {
+    if (props.currentCell.type === "bomb")
+      src = process.env.PUBLIC_URL + "/images/player_bomb.png"
+    else
+      src = process.env.PUBLIC_URL + "/images/player.png"
+  }
   else
     src = process.env.PUBLIC_URL + `/images/${props.info.img}`
   return (
