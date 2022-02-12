@@ -1,18 +1,21 @@
-import { useState, useReducer, useEffect } from "react";
+import { useState, useReducer } from "react";
 import { Container, Row, Col } from 'react-bootstrap'
 import Cell from './Cell'
 
 const HEIGHT = 60, WIDTH = 10
 const EXPLOSION_SIZE = 2
+var totalBonuses = 0
 
 function generateRandomType(i, j) {
     let random, type
     random = Math.random()
-    if (random < 0.02)
+    if (random < 0.02) {
         type = "bonus"
-    else if ((random > 0.02 && random < 0.7) || (i < 3 && j < 3))
+        totalBonuses += 1
+    }
+    else if ((random > 0.02 && random < 0.65) || (i < 3 && j < 3))
         type = "empty"
-    else if (random > 0.7 && random < 0.715)
+    else if (random > 0.65 && random < 0.70)
         type = "trap"
     else
         type = "wall"
@@ -37,7 +40,7 @@ function getImage(type) {
 }
 
 function GenerateGrid() {
-    let grid = []
+    let newGrid = []
     let row
     for (let i = 0; i < HEIGHT; i++) {
         row = []
@@ -47,9 +50,9 @@ function GenerateGrid() {
             let info = { "img": img, "type": type, "x": i, "y": j }
             row.push(info)
         }
-        grid.push(row);
+        newGrid.push(row);
     }
-    return grid;
+    return newGrid;
 }
 
 
@@ -57,7 +60,10 @@ function Grid() {
     const [grid, setGrid] = useState(GenerateGrid())
     const [currentCell, setCurrentCell] = useState(grid[0][0])
     const [buttonBombEnabled, setButtonBombEnabled] = useState(true)
+    const [gameStarted, setGameStarted] = useState(false)
     const [gameOver, setGameOver] = useState(false)
+    const [bonus, setBonus] = useState(0)
+    const [bombs, setBombs] = useState(totalBonuses + 5)
     const forceUpdate = useReducer(() => ({}))[1]
 
     function canMove(x, y) {
@@ -120,6 +126,7 @@ function Grid() {
         let x = currentCell.x, y = currentCell.y
         if (buttonBombEnabled) {
             setButtonBombEnabled(false)
+            setBombs(bombs => bombs - 1)
 
             grid[x][y].type = "bomb"
             grid[x][y].img = getImage("bomb")
@@ -127,7 +134,7 @@ function Grid() {
             setTimeout(() => {
                 explodeBomb()
                 setButtonBombEnabled(true)
-            }, 1100);
+            }, 1300);
         }
     }
 
@@ -156,6 +163,11 @@ function Grid() {
             if (grid[newX][newY].type === "trap") {
                 setGameOver(true)
             }
+            if (grid[newX][newY].type === "bonus") {
+                grid[newX][newY].type = "empty"
+                grid[newX][newY].img = getImage("empty")
+                setBonus(bonus + 1)
+            }
             setCurrentCell(grid[newX][newY])
         }
     };
@@ -164,6 +176,8 @@ function Grid() {
         setGrid(GenerateGrid())
         setCurrentCell(grid[0][0])
         setGameOver(false)
+        setBonus(0)
+        setBombs(totalBonuses + 5)
         console.log("Game restarted")
     }
 
@@ -172,10 +186,14 @@ function Grid() {
             <Container className="grid">
                 {gameOver &&
                     <Container className="game-over-modal">
-
-                        <button className="button" onMouseDown={() => restartGame()}>Restart</button>
+                        <h2>You died from poisoning!</h2>
+                        <button className="button btn-restart" onMouseDown={() => restartGame()}>Restart</button>
                     </Container>
                 }
+                <Container className="score-container">
+                    <h4>Torches: {bonus} / {totalBonuses}</h4>
+                    <h4>💣{bombs}</h4>
+                </Container>
                 {grid.map((row, index) => (
                     <Row className="row-grid" key={index}>
                         {row.map((info, i) =>
@@ -184,27 +202,28 @@ function Grid() {
                     </Row>
                 ))}
             </Container>
-            <Container className="controls">
-                <Row>
-                    <Col>
-                        <button className="button" onMouseDown={() => handleMove("up")}>↑</button>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <button className="button" onMouseDown={() => handleMove("left")}>←</button>
-                        <button className="button" onMouseDown={() => handleMove("down")}>↓</button>
-                        <button className="button" onMouseDown={() => handleMove("right")}>→</button>
-                    </Col>
-                    <Col>
-                        <button style={{ visibility: buttonBombEnabled ? 'visible' : 'hidden' }} className="button btn-bomb"
-                            onMouseDown={() => putBomb()}>
-                            💣
-                        </button>
-                    </Col>
-                </Row>
-            </Container>
-
+            {!gameOver &&
+                <Container className="controls" >
+                    <Row>
+                        <Col>
+                            <button className="button" onMouseDown={() => handleMove("up")}>↑</button>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <button className="button" onMouseDown={() => handleMove("left")}>←</button>
+                            <button className="button" onMouseDown={() => handleMove("down")}>↓</button>
+                            <button className="button" onMouseDown={() => handleMove("right")}>→</button>
+                        </Col>
+                        <Col>
+                            <button style={{ visibility: buttonBombEnabled ? 'visible' : 'hidden' }} className="button btn-bomb"
+                                onMouseDown={() => putBomb()}>
+                                💣
+                            </button>
+                        </Col>
+                    </Row>
+                </Container>
+            }
         </Container>
     );
 }
