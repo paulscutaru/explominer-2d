@@ -5,7 +5,7 @@ import Grid from './components/Grid'
 
 let soundtrack = new Audio(process.env.PUBLIC_URL + "/sounds/soundtrack.mp3")
 
-const HEIGHT = 50, WIDTH = 10
+const HEIGHT = 52, WIDTH = 10
 const EXPLOSION_SIZE = 2
 
 function generateRandomType(i, j) {
