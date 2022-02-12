@@ -1,7 +1,4 @@
 .game{
-    display: flex;
-    align-items: center;
-    justify-content: center;
     text-align: center;
   }
 
@@ -12,15 +9,30 @@
   opacity: 0.9;
   height: 200px;
   width: 320px;
-  margin: auto; 
-  background-color: grey;
+  background-color: rgb(122, 31, 31);
   border: 3px solid black;
+}
+
+.game-won-modal{
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  opacity: 0.9;
+  height: 200px;
+  width: 320px;
+  background-color: darkgoldenrod;
+  border: 3px solid black;
+}
+
+.start{
+  height: 350px;
+  background-color: darkgoldenrod;
+  border: 3px solid rgb(65, 65, 65);
 }
 
 .score-container{
   position: fixed;
   left: 50%;
-  width: 225px;
   transform: translate(-50%, 0%);
   opacity: 0.65;
   display: flex;
@@ -61,8 +73,8 @@ img, .cell {
 }
 
 .button{
-  width: 3.3rem;
-  height: 3.3rem;
+  width: 3.4rem;
+  height: 3.4rem;
   border-radius: 10px;
   cursor: pointer;
   border: 1px solid rgb(70, 70, 70);
@@ -70,7 +82,7 @@ img, .cell {
   color: darkgoldenrod;
   margin: 2px;
   padding: 0;
-  opacity: 0.75;
+  opacity: 0.8;
 }
 
 .button:hover{
@@ -80,7 +92,7 @@ img, .cell {
 .btn-restart{
   opacity: 1;
   width: 5rem;
-  height: 4rem;
+  height: 3.5rem;
 }
 
 
@@ -90,11 +102,11 @@ img, .cell {
   }
   .cell, img{
     
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2.3rem;
+    height: 2.3rem;
   }
   .row-grid{
-    height: 2.2rem;
+    height: 2.3rem;
   }
   .controls{
     left: 30%;
