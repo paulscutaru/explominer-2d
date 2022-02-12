@@ -7,6 +7,7 @@ body {
   font-smooth: never;
   -webkit-font-smoothing : none;
   background-color: black;
+  -webkit-tap-highlight-color: transparent;
 }
 
 code {

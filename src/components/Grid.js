@@ -41,7 +41,7 @@ function Grid(props) {
     const gameWon = useRef(false)
     const destroyedTorch = useRef(false)
     const [bonus, setBonus] = useState(0)
-    const [bombs, setBombs] = useState(Math.round(totalBonuses * 0.7))
+    const [bombs, setBombs] = useState(Math.round(totalBonuses * 0.7) - 1)
     const forceUpdate = useReducer(() => ({}))[1]
 
     function canMove(x, y) {
@@ -130,10 +130,9 @@ function Grid(props) {
         }, 200);
     }
 
-
     function putBomb() {
         let x = currentCell.x, y = currentCell.y
-        if (buttonBombEnabled) {
+        if (buttonBombEnabled && (bombs > 0)) {
             setButtonBombEnabled(false)
             setBombs(bombs => bombs - 1)
 
@@ -182,6 +181,7 @@ function Grid(props) {
                 setBonus(bonus => bonus + 1)
 
                 if ((bonus + 1) === totalBonuses) {
+                    playSound("win")
                     gameWon.current = true
                 }
 
@@ -227,7 +227,12 @@ function Grid(props) {
             </Container>
             {!gameOver.current && !gameWon.current &&
                 <Container className="controls" >
-                    <Row>
+                    <Row><Col>
+                        <button style={{ visibility: buttonBombEnabled ? 'visible' : 'hidden' }} className="button btn-bomb"
+                            onMouseDown={() => putBomb()}>
+                            💣
+                        </button>
+                    </Col>
                         <Col>
                             <button className="button" onMouseDown={() => handleMove("up")}>↑</button>
                         </Col>
@@ -238,12 +243,7 @@ function Grid(props) {
                             <button className="button" onMouseDown={() => handleMove("down")}>↓</button>
                             <button className="button" onMouseDown={() => handleMove("right")}>→</button>
                         </Col>
-                        <Col>
-                            <button style={{ visibility: buttonBombEnabled ? 'visible' : 'hidden' }} className="button btn-bomb"
-                                onMouseDown={() => putBomb()}>
-                                💣
-                            </button>
-                        </Col>
+
                     </Row>
                 </Container>
             }
