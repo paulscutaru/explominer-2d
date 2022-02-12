@@ -5,7 +5,7 @@ import Grid from './components/Grid'
 
 let soundtrack = new Audio(process.env.PUBLIC_URL + "/sounds/soundtrack.mp3")
 
-const HEIGHT = 52, WIDTH = 10
+const HEIGHT = 56, WIDTH = 9
 const EXPLOSION_SIZE = 2
 
 function generateRandomType(i, j) {
@@ -13,9 +13,9 @@ function generateRandomType(i, j) {
   random = Math.random()
   if (random < 0.04)
     type = "bonus"
-  else if ((random > 0.04 && random < 0.55) || (i < 3 && j < 3))
+  else if ((random > 0.04 && random < 0.56) || (i < 3 && j < 3))
     type = "empty"
-  else if (random > 0.55 && random < 0.65)
+  else if (random > 0.56 && random < 0.65)
     type = "trap"
   else
     type = "wall"

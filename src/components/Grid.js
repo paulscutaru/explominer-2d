@@ -143,7 +143,7 @@ function Grid(props) {
             setTimeout(() => {
                 explodeBomb()
                 setButtonBombEnabled(true)
-            }, 700);
+            }, 250);
         }
     }
 
@@ -225,7 +225,7 @@ function Grid(props) {
                     </Row>
                 ))}
             </Container>
-            {!gameOver.current &&
+            {!gameOver.current && !gameWon.current &&
                 <Container className="controls" >
                     <Row>
                         <Col>

@@ -73,14 +73,14 @@ img, .cell {
 }
 
 .button{
-  width: 3.4rem;
-  height: 3.4rem;
+  width: 3.6rem;
+  height: 3.6rem;
   border-radius: 10px;
   cursor: pointer;
   border: 1px solid rgb(70, 70, 70);
   background-color: rgb(37, 37, 37);
   color: darkgoldenrod;
-  margin: 2px;
+  margin: 1px;
   padding: 0;
   opacity: 0.85;
 }
@@ -101,13 +101,13 @@ img, .cell {
     margin-top: 0px;
   }
   .cell, img{
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2.5rem;
+    height: 2.5rem;
   }
   .row-grid{
-    height: 2.2rem;
+    height: 2.5rem;
   }
   .controls{
-    left: 32%;
+    left: 30%;
   }
 }
