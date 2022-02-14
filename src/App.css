@@ -6,10 +6,11 @@
   position: fixed;
   left: 50%;
   transform: translate(-50%, 50%);
-  opacity: 0.9;
-  height: 200px;
-  width: 320px;
+  height: 230px;
+  width: 340px;
   background-color: rgb(114, 17, 17);
+  background-repeat: repeat;
+  background-image: url("/public/images/cobblestone2.png");
   border: 3px solid black;
 }
 
@@ -17,24 +18,26 @@
   position: fixed;
   left: 50%;
   transform: translate(-50%, 40%);
-  opacity: 0.9;
-  height: 200px;
-  width: 320px;
+  height: 230px;
+  width: 340px;
   background-color: darkgoldenrod;
+  background-repeat: repeat;
+  background-image: url("/public/images/cobblestone2.png");
   border: 3px solid black;
 }
 
 .start{
   height: 350px;
   background-color: darkgoldenrod;
-  border: 3px solid rgb(65, 65, 65);
+  border: 3px solid rgb(48, 48, 48);
 }
+
 
 .score-container{
   position: fixed;
   left: 50%;
   transform: translate(-50%, 0%);
-  opacity: 0.65;
+  opacity: 0.7;
   display: flex;
   background-color: black;
   border-radius: 10px;
@@ -46,8 +49,9 @@
 }
 
 .grid{
-  margin: 15px auto;
+  margin:auto;
   background-color: black;
+  margin-bottom: 0px;
 }
 
 .cell{
@@ -57,39 +61,40 @@
 }
 
 .row-grid{
-  height: 3rem;
+  height: 3.45rem;
 }
 
 img, .cell {
-  width: 3rem;
-  height: 3rem;
+  width: 3.45rem;
+  height: 3.45rem;
 }
 
 
 .controls{
   position: fixed;
-  bottom: 25px;
-  left: 44%;
+  bottom: 0px;
+  left: 43.5%;
 }
 
 .button{
-  width: 4rem;
-  height: 4rem;
+  width: 4.3rem;
+  height: 4.5rem;
   border-radius: 10px;
   cursor: pointer;
-  border: 1px solid rgb(177, 177, 177);
+  border: 1px solid rgb(0, 0, 0);
   background-color: rgb(51, 51, 51);
-  color: darkgoldenrod;
+  color: goldenrod;
   padding: 0;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
+
 .btn-bomb{
-  height: 3.5rem;
+  height: 3.8rem;
   transform: translate(100%, 0%);
 }
 
-.button:hover{
+.button:active{
   border-color: rgb(223, 223, 223);
 }
 
@@ -97,10 +102,11 @@ img, .cell {
   opacity: 1;
   width: 5rem;
   height: 3.5rem;
+  margin-top: 3px;
 }
 
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 1000px) {
   .grid{
     margin-top: 0px;
   }
@@ -112,7 +118,8 @@ img, .cell {
     height: 2.5rem;
   }
   .controls{
-    transform: translate(-35%, 0%);
+    width: 100%;
+    transform: translate(-40%, 0%);
   }
 }
 

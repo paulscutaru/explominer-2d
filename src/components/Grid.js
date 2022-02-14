@@ -1,47 +1,22 @@
-import { useState, useReducer, useRef } from "react";
+import { useState, useReducer } from "react";
 import { Container, Row, Col } from 'react-bootstrap'
+import { getImage,playSound } from './utils/Utils'
 import Cell from './Cell'
-
-let explodeSound = new Audio(process.env.PUBLIC_URL + "/sounds/explode.mp3")
-let bonusSound = new Audio(process.env.PUBLIC_URL + "/sounds/bonus.mp3")
-let endSound = new Audio(process.env.PUBLIC_URL + "/sounds/end.mp3")
-let winSound = new Audio(process.env.PUBLIC_URL + "/sounds/win.mp3")
-
-function getImage(type) {
-    switch (type) {
-        case "empty":
-            return "cobblestone.png"
-        case "wall":
-            return "wall.png"
-        case "bonus":
-            return "bonus.png"
-        case "bomb":
-            return "bomb.png"
-        case "explosion":
-            return "explosion.png"
-        case "trap":
-            return "trap.png"
-    }
-}
 
 function Grid(props) {
     let grid = props.grid
     let HEIGHT = props.HEIGHT
     let WIDTH = props.WIDTH
     let EXPLOSION_SIZE = props.EXPLOSION_SIZE
-    var totalBonuses = 0
-    for (let i = 0; i < HEIGHT; i++)
-        for (let j = 0; j < WIDTH; j++)
-            if (grid[i][j].last === "bonus")
-                totalBonuses += 1
+    let totalBonuses = props.totalBonuses
 
     const [currentCell, setCurrentCell] = useState(grid[1][1])
     const [buttonBombEnabled, setButtonBombEnabled] = useState(true)
-    const gameOver = useRef(false)
-    const gameWon = useRef(false)
-    const destroyedTorch = useRef(false)
+    const [gameOver, setGameOver] = useState(false)
+    const [gameWon, setGameWon] = useState(false)
+    const [destroyedTorch, setDestroyedTorch] = useState(false)
     const [bonus, setBonus] = useState(0)
-    const [bombs, setBombs] = useState(Math.round(totalBonuses * 0.7) - 1)
+    const [bombs, setBombs] = useState(Math.round(totalBonuses * 0.7))
     const forceUpdate = useReducer(() => ({}))[1]
 
     function canMove(x, y) {
@@ -50,28 +25,12 @@ function Grid(props) {
         return true
     }
 
+
     function checkExplosion(x, y) {
         if (grid[x][y].type === "bonus") {
-            gameOver.current = true
+            setGameOver(true)
             playSound("end")
-            destroyedTorch.current = true
-        }
-    }
-
-    function playSound(sound) {
-        switch (sound) {
-            case "explode":
-                explodeSound.play()
-                break
-            case "bonus":
-                bonusSound.play()
-                break
-            case "win":
-                winSound.play()
-                break
-            case "end":
-                endSound.play()
-                break
+            setDestroyedTorch(true)
         }
     }
 
@@ -168,9 +127,12 @@ function Grid(props) {
         }
 
         if (canMove(newX, newY)) {
+            setCurrentCell(grid[newX][newY])
+            playSound("walk")
+
             if (grid[newX][newY].type === "trap") {
                 playSound("end")
-                gameOver.current = true
+                setGameOver(true)
             }
             if (grid[newX][newY].type === "bonus") {
                 playSound("bonus")
@@ -182,34 +144,31 @@ function Grid(props) {
 
                 if ((bonus + 1) === totalBonuses) {
                     playSound("win")
-                    gameWon.current = true
+                    setGameWon(true)
                 }
-
             }
-            setCurrentCell(grid[newX][newY])
         }
     };
 
     function restartGame() {
-        gameOver.current = false
+        setGameOver(false)
         window.location.reload();
-
     }
 
     return (
         <Container>
-            {gameOver.current &&
+            {gameOver &&
                 <Container className="game-over-modal">
                     <h2>Game over</h2>
-                    {destroyedTorch.current && <h3>You destroyed a torch!</h3>}
-                    {!destroyedTorch.current && <h3>You got killed!</h3>}
-                    <button className="button btn-restart" onMouseDown={() => restartGame()}>Go back</button>
+                    {destroyedTorch && <h3>You destroyed a torch!</h3>}
+                    {!destroyedTorch && <h3>You died!</h3>}
+                    <button className="button btn-restart" onMouseDown={() => restartGame()}>Back</button>
                 </Container>
             }
-            {gameWon.current &&
+            {gameWon &&
                 <Container className="game-won-modal">
                     <h2>💣Game won!💣</h2>
-                    <button className="button btn-restart" onMouseDown={() => restartGame()}>Go back</button>
+                    <button className="button btn-restart" onMouseDown={() => restartGame()}>Back</button>
                 </Container>
             }
             <Container className="grid">
@@ -219,26 +178,27 @@ function Grid(props) {
                 </Container>
                 {grid.map((row, index) => (
                     <Row className="row-grid" key={index}>
-                        {row.map((info, i) =>
-                            <Cell key={i} info={info} currentCell={currentCell} />
+                        {row.map((cell, i) =>
+                            <Cell key={i} cell={cell} currentCell={currentCell} />
                         )}
                     </Row>
                 ))}
             </Container>
-            {!gameOver.current && !gameWon.current &&
+            {!gameOver && !gameWon &&
                 <Container className="controls" >
-                    <Row><Col>
-                        <button style={{ visibility: buttonBombEnabled ? 'visible' : 'hidden' }} className="button btn-bomb"
-                            onMouseDown={() => putBomb()}>
-                            💣
-                        </button>
-                    </Col>
+                    <Row>
+                        <Col>
+                            <button style={{ visibility: buttonBombEnabled ? 'visible' : 'hidden' }} className="button btn-bomb"
+                                onMouseDown={() => putBomb()}>
+                                💣
+                            </button>
+                        </Col>
                         <Col>
                             <button className="button" onMouseDown={() => handleMove("up")}>↑</button>
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
+                        <Col >
                             <button className="button" onMouseDown={() => handleMove("left")}>←</button>
                             <button className="button" onMouseDown={() => handleMove("down")}>↓</button>
                             <button className="button" onMouseDown={() => handleMove("right")}>→</button>
