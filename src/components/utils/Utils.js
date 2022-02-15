@@ -24,6 +24,7 @@ function playSound(sound) {
     let winSound = new Audio(process.env.PUBLIC_URL + "/sounds/win.mp3")
     let walk1Sound = new Audio(process.env.PUBLIC_URL + "/sounds/walk1.mp3")
     let walk2Sound = new Audio(process.env.PUBLIC_URL + "/sounds/walk2.mp3")
+    let poisonSound = new Audio(process.env.PUBLIC_URL + "/sounds/poison.mp3")
 
     switch (sound) {
         case "explode":
@@ -34,6 +35,9 @@ function playSound(sound) {
             break
         case "win":
             winSound.play()
+            break
+        case "poison":
+            poisonSound.play()
             break
         case "end":
             endSound.play()

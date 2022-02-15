@@ -1,6 +1,6 @@
 import { useState, useReducer } from "react";
 import { Container, Row, Col } from 'react-bootstrap'
-import { getImage,playSound } from './utils/Utils'
+import { getImage, playSound } from './utils/Utils'
 import Cell from './Cell'
 
 function Grid(props) {
@@ -12,9 +12,10 @@ function Grid(props) {
 
     const [currentCell, setCurrentCell] = useState(grid[1][1])
     const [buttonBombEnabled, setButtonBombEnabled] = useState(true)
+    const [poisonEffect, setPoisonEffect] = useState(false)
     const [gameOver, setGameOver] = useState(false)
     const [gameWon, setGameWon] = useState(false)
-    const [destroyedTorch, setDestroyedTorch] = useState(false)
+    const [gameOverCause, setGameOverCause] = useState("")
     const [bonus, setBonus] = useState(0)
     const [bombs, setBombs] = useState(Math.round(totalBonuses * 0.7))
     const forceUpdate = useReducer(() => ({}))[1]
@@ -25,12 +26,11 @@ function Grid(props) {
         return true
     }
 
-
     function checkExplosion(x, y) {
         if (grid[x][y].type === "bonus") {
             setGameOver(true)
+            setGameOverCause("Your bomb destroyed a torch!")
             playSound("end")
-            setDestroyedTorch(true)
         }
     }
 
@@ -105,8 +105,20 @@ function Grid(props) {
         }
     }
 
+    function eraseEffects() {
+        document.getElementById("grid").style.filter = "none"
+        setPoisonEffect(false)
+    }
+
+
     function handleMove(direction) {
         let newX = 0, newY = 0
+
+        if (poisonEffect) {
+            let allDirections = ["left", "right", "up", "down"]
+            direction = allDirections[Math.floor(Math.random() * allDirections.length)]
+        }
+
         switch (direction) {
             case "left":
                 newX = currentCell.x
@@ -130,17 +142,31 @@ function Grid(props) {
             setCurrentCell(grid[newX][newY])
             playSound("walk")
 
-            if (grid[newX][newY].type === "trap") {
+            if (grid[newX][newY].type === "skull") {
+                setGameOverCause("You died!")
                 playSound("end")
+                eraseEffects()
                 setGameOver(true)
             }
-            if (grid[newX][newY].type === "bonus") {
-                playSound("bonus")
+            else if (grid[newX][newY].type === "trap") {
+                grid[newX][newY].type = "empty"
+                grid[newX][newY].img = getImage("empty")
+
+                document.getElementById("grid").style.filter = "hue-rotate(90deg)";
+
+                setPoisonEffect(true)
+
+                setTimeout(eraseEffects, 5000)
+                playSound("poison")
+            }
+            else if (grid[newX][newY].type === "bonus") {
 
                 grid[newX][newY].type = "empty"
                 grid[newX][newY].img = getImage("empty")
 
                 setBonus(bonus => bonus + 1)
+
+                playSound("bonus")
 
                 if ((bonus + 1) === totalBonuses) {
                     playSound("win")
@@ -160,8 +186,7 @@ function Grid(props) {
             {gameOver &&
                 <Container className="game-over-modal">
                     <h2>Game over</h2>
-                    {destroyedTorch && <h3>You destroyed a torch!</h3>}
-                    {!destroyedTorch && <h3>You died!</h3>}
+                    <h3>{gameOverCause}</h3>
                     <button className="button btn-restart" onMouseDown={() => restartGame()}>Back</button>
                 </Container>
             }
@@ -171,7 +196,7 @@ function Grid(props) {
                     <button className="button btn-restart" onMouseDown={() => restartGame()}>Back</button>
                 </Container>
             }
-            <Container className="grid">
+            <Container className="grid" id="grid">
                 <Container className="score-container">
                     <h4>Torches: {bonus} / {totalBonuses}</h4>
                     <h4>💣{bombs}</h4>

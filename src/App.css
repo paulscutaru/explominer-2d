@@ -6,8 +6,8 @@
   position: fixed;
   left: 50%;
   transform: translate(-50%, 50%);
-  height: 230px;
-  width: 340px;
+  height: 235px;
+  width: 320px;
   background-color: rgb(114, 17, 17);
   background-repeat: repeat;
   background-image: url("/public/images/cobblestone2.png");
@@ -18,8 +18,8 @@
   position: fixed;
   left: 50%;
   transform: translate(-50%, 40%);
-  height: 230px;
-  width: 340px;
+  height: 235px;
+  width: 320px;
   background-color: darkgoldenrod;
   background-repeat: repeat;
   background-image: url("/public/images/cobblestone2.png");
@@ -27,7 +27,8 @@
 }
 
 .start{
-  height: 350px;
+  height: 380px;
+  transform: translate(-50%, 30%);
   background-color: darkgoldenrod;
   border: 3px solid rgb(48, 48, 48);
 }
@@ -37,11 +38,13 @@
   position: fixed;
   left: 50%;
   transform: translate(-50%, 0%);
+  width: 60%;
   opacity: 0.7;
   display: flex;
+  justify-content: center;
   background-color: black;
   border-radius: 10px;
-  color: darkgoldenrod;
+  color: goldenrod;
 }
 
 .score-container h4{

@@ -1,10 +1,6 @@
 import './App.css';
-import { Container } from 'react-bootstrap'
-import { useEffect } from 'react';
 import { getImage } from './components/utils/Utils'
 import Game from './components/Game'
-
-let soundtrack = new Audio(process.env.PUBLIC_URL + "/sounds/soundtrack.mp3")
 
 const HEIGHT = 59, WIDTH = 9
 const EXPLOSION_SIZE = 2
@@ -17,11 +13,11 @@ function generateRandomType(i, j) {
     type = "bonus"
     totalBonuses += 1
   }
-  else if ((random > 0.05 && random < 0.56) || (i < 3 && j < 3))
+  else if ((random > 0.05 && random < 0.57) || (i < 3 && j < 3))
     type = "empty"
-  else if (random > 0.56 && random < 0.63)
+  else if (random > 0.57 && random < 0.59)
     type = "trap"
-  else if (random > 0.63 && random < 0.65)
+  else if (random > 0.59 && random < 0.65)
     type = "skull"
   else
     type = "wall"
@@ -50,7 +46,7 @@ function generateGrid() {
 }
 
 function App() {
-  var grid = generateGrid()
+  const grid = generateGrid()
 
   return (
     <Game grid={grid} HEIGHT={HEIGHT} WIDTH={WIDTH}

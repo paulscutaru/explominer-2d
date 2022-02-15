@@ -30,7 +30,8 @@ function Game(props) {
                         <h3>How to play</h3>
                         <h4>• Collect all torches.<br />
                             • Use bombs wisely.<br />
-                            • Avoid skulls or poison.
+                            • Try to avoid poison.<br />
+                            • Avoid skulls at all cost!
                         </h4>
                     </Container>
                     <button className="button btn-restart" onMouseDown={() => startGame()}>Start</button>
