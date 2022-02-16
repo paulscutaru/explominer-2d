@@ -6,7 +6,6 @@ let soundtrack = new Audio(process.env.PUBLIC_URL + "/sounds/soundtrack.mp3")
 
 function Game(props) {
     const [gameStarted, setGameStarted] = useState(false)
-    const grid = props.grid
 
     window.scroll({
         top: 0,

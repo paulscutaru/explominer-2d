@@ -1,6 +1,3 @@
-import classNames from "classnames";
-import { Container } from 'react-bootstrap'
-
 function Cell(props) {
   let src;
   if (props.cell.x === props.currentCell.x && props.cell.y === props.currentCell.y) {
@@ -15,7 +12,7 @@ function Cell(props) {
     <button className="cell" >
 
 
-      <img src={src} />
+      <img src={src} alt=''/>
     </button>
   );
 }

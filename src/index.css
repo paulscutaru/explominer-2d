@@ -4,6 +4,8 @@ body {
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: black;
   -webkit-tap-highlight-color: transparent;
+  
+  image-rendering: pixelated;
 }
 
 code {
