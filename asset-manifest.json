@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/explominer-2d/static/css/main.910027f5.css",
-    "main.js": "/explominer-2d/static/js/main.f24e8c9d.js",
+    "main.css": "/explominer-2d/static/css/main.6220c2a2.css",
+    "main.js": "/explominer-2d/static/js/main.ab11f9f6.js",
     "index.html": "/explominer-2d/index.html",
-    "main.910027f5.css.map": "/explominer-2d/static/css/main.910027f5.css.map",
-    "main.f24e8c9d.js.map": "/explominer-2d/static/js/main.f24e8c9d.js.map"
+    "main.6220c2a2.css.map": "/explominer-2d/static/css/main.6220c2a2.css.map",
+    "main.ab11f9f6.js.map": "/explominer-2d/static/js/main.ab11f9f6.js.map"
   },
   "entrypoints": [
-    "static/css/main.910027f5.css",
-    "static/js/main.f24e8c9d.js"
+    "static/css/main.6220c2a2.css",
+    "static/js/main.ab11f9f6.js"
   ]
 }
